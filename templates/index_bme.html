@@ -1,0 +1,39 @@
+{% include 'base_bme.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3">Daftar Tanaman</h2>
+    <a href="{{ url_for('add_item') }}" class="btn btn-primary mb-3"><i class="bi bi-plus-square"></i> Tambah Tanaman</a>
+    <table class="table table-bordered">
+        <thead class="table-primary">
+        <tr>
+            <th>No</th>
+            <th>Nama</th>
+            <th>Nama Latin</th>
+            <th>Jenis Zona</th>
+            <th>Suhu Optimal</th>
+            <th>Kelembapan Optimal</th>
+            <th>Keterangan</th>
+            <th style="width: 120px;">Aksi</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ item[2] }}</td>
+            <td>{{ item[4] }}</td>
+            <td>{{ item[1] }}</td>
+            <td>{{ item[5] }}</td>
+            <td>{{ item[6] }}</td>
+            <td>{{ item[3] or '-' }}</td>
+            <td class="text-center">
+                <a href="{{ url_for('edit_item', id=item[0]) }}" class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i></a>
+                <a href="{{ url_for('delete_item', id=item[0]) }}" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus tanaman ini?');"><i class="bi bi-trash"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

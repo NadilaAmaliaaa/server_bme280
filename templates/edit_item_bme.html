@@ -1,0 +1,41 @@
+{% include 'base_bme.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Edit Tanaman</h2>
+    <form action="{{ url_for('edit_item', id=item[0]) }}" method="POST">
+        <div class="mb-3">
+            <label for="nama" class="form-label">Nama Tanaman</label>
+            <input type="text" class="form-control" id="nama" name="nama" value="{{ item[2] }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="jenis_zona" class="form-label">Jenis Zona</label>
+            {% set zona_list = ['Cool_Humid', 'Hot_Dry', 'Unstable'] %}
+            <select class="form-select" id="jenis_zona" name="jenis_zona" required>
+                <option value="">-- Pilih Zona --</option>
+                {% for zona in zona_list %}
+                    <option value="{{ zona }}" {% if item[1] == zona %}selected{% endif %}>{{ zona }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="latin" class="form-label">Nama Latin</label>
+            <input type="text" class="form-control" id="latin" name="latin" value="{{ item[4] }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="suhu_optimal" class="form-label">Suhu Optimal</label>
+            <input type="text" class="form-control" id="suhu_optimal" name="suhu_optimal" value="{{ item[5] }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="kelembaban_optimal" class="form-label">Kelembaban Optimal</label>
+            <input type="text" class="form-control" id="kelembaban_optimal" name="kelembaban_optimal" value="{{ item[6] }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="keterangan" class="form-label">Keterangan</label>
+            <textarea class="form-control" id="keterangan" name="keterangan" rows="3">{{ item[3] }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Simpan Perubahan</button>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Batal</a>
+    </form>
+</div>
+{% endblock %}

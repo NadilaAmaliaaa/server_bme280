@@ -2,7 +2,7 @@ import sqlite3
 import json
 import paho.mqtt.client as mqtt
 
-BROKER = "192.168.57.237"   # Ganti dengan IP broker jika bukan lokal
+BROKER = "192.168.57.2"   # Ganti dengan IP broker jika bukan lokal
 PORT = 1883
 TOPIC_REQUEST = "tanaman/get"
 TOPIC_RESPONSE = "tanaman/response"

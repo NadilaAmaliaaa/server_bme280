@@ -2,9 +2,11 @@ from flask import Flask, request, jsonify
 import sqlite3
 import joblib
 import numpy as np
+import pickle
 
 app = Flask(__name__)
 model = joblib.load('knn_model_smart_farm.pkl')
+# model = joblib.load('model_knn.pkl')
 
 # Get semua tanaman
 @app.route('/api/tanaman', methods=['GET'])
@@ -94,11 +96,41 @@ def predict():
         confidence = max(proba)
 
         result_pred = pred[0] if isinstance(pred, (list, np.ndarray)) else pred
-        result = {'zone': str(result_pred), 'confidence': round(confidence * 100, 2)} 
+        result = {'zone': str(result_pred), 'confidence': round(confidence * 100, 2)}
+        print(result) 
         return jsonify(result)
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+@app.route('/api/predict2', methods=['POST'])
+def predict2():
+    try:
+        data = request.get_json()
+        suhu = float(data.get('temperature'))
+        tekanan = float(data.get('pressure')) 
+        ketinggian = float(data.get('altitude'))
+
+        x_input = np.array([[suhu, tekanan, ketinggian]])
+        print("Input:", x_input)
+
+        pred = model.predict(x_input)
+        print("Raw prediction:", pred)
+
+        if hasattr(model, "predict_proba"):
+            proba = model.predict_proba(x_input)[0]
+            confidence = max(proba)
+        else:
+            confidence = 1.0
+
+        result_pred = pred[0] if isinstance(pred, (list, np.ndarray)) else pred
+        result = {'zone': str(result_pred), 'confidence': round(confidence * 100, 2)}
+        print("Result:", result)
+        return jsonify(result)
+    except Exception as e:
+        print("❌ Error in /api/predict:", str(e))
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=5050)

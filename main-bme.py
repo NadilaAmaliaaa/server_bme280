@@ -6,6 +6,7 @@ import numpy as np
 
 app = Flask(__name__)
 app.secret_key = 'RAHASIA'
+last_prediction = None
 
 model = joblib.load('knn_model_smart_farm.pkl')
 @app.before_request
@@ -130,6 +131,7 @@ def get_tanaman():
 
 @app.route('/api/predict', methods=['POST'])
 def predict():
+    global last_prediction
     try:
         print("📡 Received prediction request")
         print("📄 Request headers:", dict(request.headers))
@@ -174,6 +176,17 @@ def predict():
             
         result = {'zone': str(result_pred), 'conf': round(int(confidence * 100),2)} 
         print("✅ Sending response:", result,)
+        # if last_prediction != result_pred:
+        #     last_prediction = result_pred
+        #     # Kirim request ke bot Venom
+        #     import requests
+        #     try:
+        #         requests.post("http://localhost:3000/send-message", json={
+        #             "message": f"Prediksi berubah! Zona sekarang: {result_pred} ({result['conf']}% yakin)"
+        #         })
+        #         print("📩 Notifikasi WhatsApp dikirim")
+        #     except Exception as e:
+        #         print("⚠ Gagal kirim notifikasi:", e)
         return jsonify(result)
         
     except Exception as e:
